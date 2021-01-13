@@ -32,13 +32,6 @@ const validateUserSignup = celebrate({
     email: Joi.string().required().email(),
     password: Joi.string().required().min(8),
     name: Joi.string().required().min(2).max(30),
-    // about: Joi.string().min(2).max(30),
-    // avatar: Joi.string().custom((url) => {
-    //   if (!validator.isURL(url)) {
-    //     throw new CelebrateError("Неверный URL");
-    //   }
-    //   return url;
-    // }),
   }),
 });
 
@@ -57,7 +50,6 @@ app.get("/crash-test", () => {
 
 app.post("/signin", validateUserLogin, login);
 app.post("/signup", validateUserSignup, createUser);
-// app.post("/signup", createUser);
 app.use(auth);
 
 app.use("/articles", articlesRouter);

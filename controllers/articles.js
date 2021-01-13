@@ -73,37 +73,3 @@ module.exports.deleteArticle = (req, res, next) => {
     })
     .catch(next);
 };
-
-// module.exports.likeCard = (req, res, next) => {
-//   Card.findByIdAndUpdate(
-//     req.params._id,
-//     { $addToSet: { likes: req.user._id } },
-//     { new: true }
-//   )
-//     .then((card) => {
-//       if (!card) {
-//         throw new NotFoundError(
-//           "Карточки с таким id не существует, невозможно проставить лайк"
-//         );
-//       }
-//       res.send(card);
-//     })
-//     .catch(next);
-// };
-
-// module.exports.dislikeCard = (req, res, next) => {
-//   Card.findByIdAndUpdate(
-//     req.params._id,
-//     { $pull: { likes: req.user._id } },
-//     { new: true }
-//   )
-//     .then((card) => {
-//       if (!card) {
-//         throw new NotFoundError(
-//           "Карточки с таким id не существует, невозможно забрать лайк"
-//         );
-//       }
-//       res.send(card);
-//     })
-//     .catch(next);
-// };

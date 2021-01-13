@@ -43,7 +43,5 @@ const validateArticle = celebrate({
 articlesRouter.get("/", getArticles);
 articlesRouter.post("/", validateArticle, createArticle);
 articlesRouter.delete("/:_id", validateArticleId, deleteArticle);
-// cardsRouter.put("/:_id/likes", validateCardId, likeCard);
-// cardsRouter.delete("/:_id/likes", validateCardId, dislikeCard);
 
 module.exports = articlesRouter;

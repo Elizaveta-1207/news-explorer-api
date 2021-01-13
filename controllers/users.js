@@ -43,28 +43,8 @@ module.exports.getUser = (req, res, next) => {
     });
 };
 
-// module.exports.getUserById = (req, res, next) => {
-//   User.findById(req.params._id)
-//     .then((user) => {
-//       if (!user) {
-//         throw new NotFoundError("Нет пользователя с таким id");
-//       } else {
-//         res.send(user);
-//       }
-//     })
-//     .catch((err) => {
-//       if (err.kind === "ObjectId") {
-//         next(new UnauthError("Неверно введен id")); // сюда попадет ошибка 401
-//       }
-//       next(err); // сюда попадут ошибки 404 и 500
-//     });
-// };
-
 module.exports.createUser = (req, res, next) => {
   const { email, password, name } = req.body;
-  // console.log(req.body.password);
-  // let p = req.body.password;
-  // console.log(p.length);
   if (req.body.password.length < 8) {
     throw new BadRequestError(
       "Ошибка валидации. Пароль должен состоять из 8 или более символов"
@@ -84,8 +64,6 @@ module.exports.createUser = (req, res, next) => {
           throw new NotFoundError("Неправильно переданы данные");
         } else {
           res.send({
-            // about: newUser.about,
-            // avatar: newUser.avatar,
             email: newUser.email,
             name: newUser.name,
           });
@@ -105,35 +83,10 @@ module.exports.createUser = (req, res, next) => {
   }
 };
 
-// module.exports.updateUser = (req, res, next) => {
-//   const { name, about } = req.body;
-//   User.findByIdAndUpdate(req.user._id, { name, about }, { new: true })
-//     .then((user) => {
-//       res.send(user);
-//     })
-//     .catch(next);
-// };
-
-// module.exports.updateAvatar = (req, res, next) => {
-//   const { avatar } = req.body;
-//   User.findByIdAndUpdate(req.user._id, { avatar }, { new: true })
-//     .then((user) => {
-//       if (!user) {
-//         throw new NotFoundError("Нет пользователя с таким id");
-//       } else {
-//         res.send(user);
-//       }
-//     })
-//     .catch(next);
-// };
-
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
-  // return User.findUserByCredentials(email, password)
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      // прописать ошибку!!!
-      // console.log(user);
       if (!user) {
         throw new UnauthError("Авторизация не пройдена!");
       }
@@ -144,7 +97,6 @@ module.exports.login = (req, res, next) => {
         NODE_ENV === "production" ? JWT_SECRET : "dev-secret",
         { expiresIn: "7d" }
       );
-      // что не так!!?
       res.send({ token });
     })
     .catch(next);
