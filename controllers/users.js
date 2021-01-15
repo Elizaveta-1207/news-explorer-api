@@ -35,13 +35,7 @@ module.exports.getUser = (req, res, next) => {
         res.send(user);
       }
     })
-    .catch((err) => {
-      if (err.kind === 'ObjectId') {
-        next(new UnauthError('Неверно введен id')); // сюда попадет ошибка 401
-      } else {
-        next(err); // сюда попадут ошибки 404 и 500
-      }
-    });
+    .catch(next);
 };
 
 module.exports.createUser = (req, res, next) => {
