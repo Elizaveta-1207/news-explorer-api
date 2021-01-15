@@ -1,13 +1,13 @@
 /* eslint-disable function-paren-newline */
 /* eslint-disable comma-dangle */
 /* eslint-disable implicit-arrow-linebreak */
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const User = require("../models/user");
-const NotFoundError = require("../errors/NotFoundError");
-const BadRequestError = require("../errors/BadRequestError");
-const UnauthError = require("../errors/UnauthError");
-const UniqueError = require("../errors/UniqueError");
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const User = require('../models/user');
+const NotFoundError = require('../errors/NotFoundError');
+const BadRequestError = require('../errors/BadRequestError');
+const UnauthError = require('../errors/UnauthError');
+const UniqueError = require('../errors/UniqueError');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
@@ -15,7 +15,7 @@ module.exports.getUsers = (req, res, next) => {
   User.find({})
     .then((users) => {
       if (!users) {
-        throw new NotFoundError("Данные о пользователях не найдены!");
+        throw new NotFoundError('Данные о пользователях не найдены!');
       } else {
         res.send(users);
       }
@@ -30,14 +30,14 @@ module.exports.getUser = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
       if (!user) {
-        throw new NotFoundError("Нет пользователя с таким id");
+        throw new NotFoundError('Нет пользователя с таким id');
       } else {
         res.send(user);
       }
     })
     .catch((err) => {
-      if (err.kind === "ObjectId") {
-        next(new UnauthError("Неверно введен id")); // сюда попадет ошибка 401
+      if (err.kind === 'ObjectId') {
+        next(new UnauthError('Неверно введен id')); // сюда попадет ошибка 401
       }
       next(err); // сюда попадут ошибки 404 и 500
     });
@@ -47,7 +47,7 @@ module.exports.createUser = (req, res, next) => {
   const { email, password, name } = req.body;
   if (req.body.password.length < 8) {
     throw new BadRequestError(
-      "Ошибка валидации. Пароль должен состоять из 8 или более символов"
+      'Ошибка валидации. Пароль должен состоять из 8 или более символов'
     );
   } else {
     bcrypt
@@ -61,7 +61,7 @@ module.exports.createUser = (req, res, next) => {
       )
       .then((newUser) => {
         if (!newUser) {
-          throw new NotFoundError("Неправильно переданы данные");
+          throw new NotFoundError('Неправильно переданы данные');
         } else {
           res.send({
             email: newUser.email,
@@ -70,13 +70,13 @@ module.exports.createUser = (req, res, next) => {
         }
       })
       .catch((err) => {
-        console.log(err);
-        if (err.name === "ValidationError") {
+        // console.log(err);
+        if (err.name === 'ValidationError') {
           next(
-            new BadRequestError("Ошибка валидации. Введены некорректные данные")
+            new BadRequestError('Ошибка валидации. Введены некорректные данные')
           );
         } else if (err.code === 11000) {
-          next(new UniqueError("Данный email уже зарегистрирован"));
+          next(new UniqueError('Данный email уже зарегистрирован'));
         }
         next(err);
       });
@@ -88,14 +88,14 @@ module.exports.login = (req, res, next) => {
   return User.findUserByCredentials(email, password)
     .then((user) => {
       if (!user) {
-        throw new UnauthError("Авторизация не пройдена!");
+        throw new UnauthError('Авторизация не пройдена!');
       }
       const token = jwt.sign(
         { _id: user._id },
         // временно!!!
         // "super-strong-secret",
-        NODE_ENV === "production" ? JWT_SECRET : "dev-secret",
-        { expiresIn: "7d" }
+        NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
+        { expiresIn: '7d' }
       );
       res.send({ token });
     })

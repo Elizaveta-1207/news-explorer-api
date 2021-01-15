@@ -1,7 +1,7 @@
-const usersRouter = require("express").Router();
-const { celebrate, Joi } = require("celebrate");
+const usersRouter = require('express').Router();
+const { celebrate, Joi } = require('celebrate');
 
-const { getUsers, getUser } = require("../controllers/users");
+const { getUsers, getUser } = require('../controllers/users');
 
 const validateUserId = celebrate({
   params: Joi.object().keys({
@@ -9,7 +9,7 @@ const validateUserId = celebrate({
   }),
 });
 
-usersRouter.get("/", getUsers);
-usersRouter.get("/me", validateUserId, getUser);
+usersRouter.get('/', getUsers);
+usersRouter.get('/me', validateUserId, getUser);
 
 module.exports = usersRouter;

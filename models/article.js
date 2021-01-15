@@ -1,6 +1,6 @@
 /* eslint-disable no-useless-escape */
-const mongoose = require("mongoose");
-const validator = require("validator");
+const mongoose = require('mongoose');
+const validator = require('validator');
 
 // const regex = /https?:\/\/([\/\w.-]+)/;
 
@@ -33,7 +33,7 @@ const articleSchema = new mongoose.Schema({
         // return regex.test(v);
         return validator.isURL(v);
       },
-      message: "This link is not valid!", // когда validator вернёт false, будет использовано это сообщение
+      message: 'This link is not valid!', // когда validator вернёт false, будет использовано это сообщение
     },
   },
   image: {
@@ -44,7 +44,7 @@ const articleSchema = new mongoose.Schema({
         // return regex.test(v);
         return validator.isURL(v);
       },
-      message: "This link is not valid!", // когда validator вернёт false, будет использовано это сообщение
+      message: 'This link is not valid!', // когда validator вернёт false, будет использовано это сообщение
     },
   },
   owner: {
@@ -54,4 +54,4 @@ const articleSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("article", articleSchema);
+module.exports = mongoose.model('article', articleSchema);

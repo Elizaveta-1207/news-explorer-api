@@ -1,12 +1,12 @@
-const articlesRouter = require("express").Router();
-const { celebrate, Joi, CelebrateError } = require("celebrate");
-const validator = require("validator");
+const articlesRouter = require('express').Router();
+const { celebrate, Joi, CelebrateError } = require('celebrate');
+const validator = require('validator');
 
 const {
   getArticles,
   createArticle,
   deleteArticle,
-} = require("../controllers/articles");
+} = require('../controllers/articles');
 
 const validateArticleId = celebrate({
   params: Joi.object().keys({
@@ -25,7 +25,7 @@ const validateArticle = celebrate({
       .required()
       .custom((url) => {
         if (!validator.isURL(url)) {
-          throw new CelebrateError("Неверный URL");
+          throw new CelebrateError('Неверный URL');
         }
         return url;
       }),
@@ -33,15 +33,15 @@ const validateArticle = celebrate({
       .required()
       .custom((url) => {
         if (!validator.isURL(url)) {
-          throw new CelebrateError("Неверный URL");
+          throw new CelebrateError('Неверный URL');
         }
         return url;
       }),
   }),
 });
 
-articlesRouter.get("/", getArticles);
-articlesRouter.post("/", validateArticle, createArticle);
-articlesRouter.delete("/:_id", validateArticleId, deleteArticle);
+articlesRouter.get('/', getArticles);
+articlesRouter.post('/', validateArticle, createArticle);
+articlesRouter.delete('/:_id', validateArticleId, deleteArticle);
 
 module.exports = articlesRouter;

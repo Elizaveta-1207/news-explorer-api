@@ -1,16 +1,15 @@
-/* eslint-disable function-paren-newline */
 /* eslint-disable comma-dangle */
-/* eslint-disable implicit-arrow-linebreak */
-const Article = require("../models/article");
-const NotFoundError = require("../errors/NotFoundError");
-const BadRequestError = require("../errors/BadRequestError");
-const ForbiddenError = require("../errors/ForbiddenError");
+/* eslint-disable object-curly-newline */
+const Article = require('../models/article');
+const NotFoundError = require('../errors/NotFoundError');
+const BadRequestError = require('../errors/BadRequestError');
+const ForbiddenError = require('../errors/ForbiddenError');
 
 module.exports.getArticles = (req, res, next) => {
   Article.find({})
     .then((articles) => {
       if (!articles) {
-        throw new NotFoundError("Данные о карточках не найдены!");
+        throw new NotFoundError('Данные о карточках не найдены!');
       }
       res.send(articles);
     })
@@ -31,16 +30,16 @@ module.exports.createArticle = (req, res, next) => {
   })
     .then((article) => {
       if (!article) {
-        throw new NotFoundError("Неправильно переданы данные");
+        throw new NotFoundError('Неправильно переданы данные');
       } else {
         res.send(article);
       }
     })
     .catch((err) => {
       // console.log(err);
-      if (err.name === "ValidationError") {
+      if (err.name === 'ValidationError') {
         next(
-          new BadRequestError("Ошибка валидации. Введены некорректные данные")
+          new BadRequestError('Ошибка валидации. Введены некорректные данные')
         );
       }
       next(err);
@@ -49,22 +48,22 @@ module.exports.createArticle = (req, res, next) => {
 
 module.exports.deleteArticle = (req, res, next) => {
   Article.findById(req.params._id)
-    .select("+owner")
+    .select('+owner')
     .orFail(() => {
       throw new NotFoundError(
-        "Карточки с таким id не существует, невозможно удалить!"
+        'Карточки с таким id не существует, невозможно удалить!'
       );
     })
     .then((article) => {
       if (article.owner.toString() !== req.user._id) {
-        throw new ForbiddenError("Нельзя удалить чужую карточку!");
+        throw new ForbiddenError('Нельзя удалить чужую карточку!');
       }
     })
     .then(() => {
       Article.findByIdAndRemove(req.params._id)
         .then((article) => {
           if (!article) {
-            throw new NotFoundError("Запрашиваемый ресурс не найден");
+            throw new NotFoundError('Запрашиваемый ресурс не найден');
             // return Promise.reject(new Error("Запрашиваемый ресурс не найден"));
           }
           res.send(article);
