@@ -38,49 +38,52 @@ module.exports.getUser = (req, res, next) => {
     .catch((err) => {
       if (err.kind === 'ObjectId') {
         next(new UnauthError('Неверно введен id')); // сюда попадет ошибка 401
+      } else {
+        next(err); // сюда попадут ошибки 404 и 500
       }
-      next(err); // сюда попадут ошибки 404 и 500
     });
 };
 
 module.exports.createUser = (req, res, next) => {
   const { email, password, name } = req.body;
-  if (req.body.password.length < 8) {
-    throw new BadRequestError(
-      'Ошибка валидации. Пароль должен состоять из 8 или более символов'
-    );
-  } else {
-    bcrypt
-      .hash(password.toString(), 10)
-      .then((hash) =>
-        User.create({
-          email,
-          password: hash,
-          name,
-        })
-      )
-      .then((newUser) => {
-        if (!newUser) {
-          throw new NotFoundError('Неправильно переданы данные');
-        } else {
-          res.send({
-            email: newUser.email,
-            name: newUser.name,
-          });
-        }
-      })
-      .catch((err) => {
-        // console.log(err);
-        if (err.name === 'ValidationError') {
-          next(
-            new BadRequestError('Ошибка валидации. Введены некорректные данные')
-          );
-        } else if (err.code === 11000) {
-          next(new UniqueError('Данный email уже зарегистрирован'));
-        }
+  // if (req.body.password.length < 8) {
+  //   throw new BadRequestError(
+  //     'Ошибка валидации. Пароль должен состоять из 8 или более символов'
+  //   );
+  // } else {
+  bcrypt
+    .hash(password.toString(), 10)
+    .then((hash) => User.create({ email, password: hash, name }))
+    .then((newUser) => {
+      if (!newUser) {
+        throw new BadRequestError('Неправильно переданы данные');
+      } else {
+        res.send({
+          email: newUser.email,
+          name: newUser.name,
+        });
+      }
+    })
+    .catch((err) => {
+      // eslint-disable-next-line no-console
+      // console.log(err);
+      // eslint-disable-next-line no-console
+      // eslint-disable-next-line no-underscore-dangle
+      // console.log(err._message);
+      /* if (err.name === 'ValidationError') {
+        next(
+          new BadRequestError('Ошибка валидации. Введены некорректные данные')
+        );
+      } else */ if (
+        // eslint-disable-next-line no-underscore-dangle
+        err._message === 'user validation failed'
+      ) {
+        next(new UniqueError('Данный email уже зарегистрирован'));
+      } else {
         next(err);
-      });
-  }
+      }
+    });
+  // }
 };
 
 module.exports.login = (req, res, next) => {
