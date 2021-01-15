@@ -6,12 +6,13 @@ const BadRequestError = require('../errors/BadRequestError');
 const ForbiddenError = require('../errors/ForbiddenError');
 
 module.exports.getArticles = (req, res, next) => {
-  Article.find({})
+  Article.find({ owner: req.user._id })
     .then((articles) => {
       if (!articles) {
-        throw new NotFoundError('Данные о карточках не найдены!');
+        throw new NotFoundError('Данные не найдены!');
+      } else {
+        res.send(articles);
       }
-      res.send(articles);
     })
     .catch(next);
 };
