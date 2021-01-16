@@ -1,6 +1,4 @@
-/* eslint-disable function-paren-newline */
 /* eslint-disable comma-dangle */
-/* eslint-disable implicit-arrow-linebreak */
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
@@ -17,7 +15,6 @@ const {
   wrongEmailOrPsw,
 } = require('../configs/messages');
 
-// const { NODE_ENV, JWT_SECRET } = process.env;
 const { JWT_SECRET } = require('../configs/index');
 
 module.exports.getUsers = (req, res, next) => {
@@ -25,7 +22,6 @@ module.exports.getUsers = (req, res, next) => {
     .then((users) => {
       if (!users) {
         throw new NotFoundError(notFoundMessage);
-        // throw new NotFoundError('Данные о пользователях не найдены!');
       } else {
         res.send(users);
       }
@@ -41,7 +37,6 @@ module.exports.getUser = (req, res, next) => {
     .then((user) => {
       if (!user) {
         throw new NotFoundError(notFoundIdUser);
-        // throw new NotFoundError('Нет пользователя с таким id');
       } else {
         res.send(user);
       }
@@ -51,18 +46,13 @@ module.exports.getUser = (req, res, next) => {
 
 module.exports.createUser = (req, res, next) => {
   const { email, password, name } = req.body;
-  // if (req.body.password.length < 8) {
-  //   throw new BadRequestError(
-  //     'Ошибка валидации. Пароль должен состоять из 8 или более символов'
-  //   );
-  // } else {
+
   bcrypt
     .hash(password.toString(), 10)
     .then((hash) => User.create({ email, password: hash, name }))
     .then((newUser) => {
       if (!newUser) {
         throw new BadRequestError(badRequestMessage);
-        // throw new BadRequestError('Неправильно переданы данные');
       } else {
         res.send({
           email: newUser.email,
@@ -71,27 +61,14 @@ module.exports.createUser = (req, res, next) => {
       }
     })
     .catch((err) => {
-      // eslint-disable-next-line no-console
-      // console.log(err);
-      // eslint-disable-next-line no-console
-      // console.log(err.name);
       if (err.name === 'ValidationError') {
-        next(
-          new BadRequestError(badRequestMessage)
-          // new BadRequestError('Ошибка валидации. Введены некорректные данные')
-        );
-      } else if (
-        // eslint-disable-next-line no-underscore-dangle
-        // err._message === 'user validation failed'
-        err.code === 11000
-      ) {
+        next(new BadRequestError(badRequestMessage));
+      } else if (err.code === 11000) {
         next(new UniqueError(notUniqueEmail));
-        // next(new UniqueError('Данный email уже зарегистрирован'));
       } else {
         next(err);
       }
     });
-  // }
 };
 
 module.exports.login = (req, res, next) => {
@@ -100,13 +77,10 @@ module.exports.login = (req, res, next) => {
     .then((user) => {
       if (!user) {
         throw new UnauthError(wrongEmailOrPsw);
-        // throw new UnauthError('Авторизация не пройдена!');
       }
       const token = jwt.sign(
         { _id: user._id },
-        // временно!!!
-        // "super-strong-secret",
-        // NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
+
         JWT_SECRET,
         { expiresIn: '7d' }
       );

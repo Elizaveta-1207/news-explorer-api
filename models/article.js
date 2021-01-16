@@ -1,9 +1,6 @@
-/* eslint-disable no-useless-escape */
 const mongoose = require('mongoose');
 const validator = require('validator');
 const { notValidLink } = require('../configs/messages');
-
-// const regex = /https?:\/\/([\/\w.-]+)/;
 
 const articleSchema = new mongoose.Schema({
   keyword: {
@@ -31,7 +28,6 @@ const articleSchema = new mongoose.Schema({
     required: true,
     validate: {
       validator(v) {
-        // return regex.test(v);
         return validator.isURL(v);
       },
       message: notValidLink, // когда validator вернёт false, будет использовано это сообщение
@@ -42,7 +38,6 @@ const articleSchema = new mongoose.Schema({
     required: true,
     validate: {
       validator(v) {
-        // return regex.test(v);
         return validator.isURL(v);
       },
       message: notValidLink, // когда validator вернёт false, будет использовано это сообщение
