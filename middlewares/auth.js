@@ -3,11 +3,12 @@
 const jwt = require('jsonwebtoken');
 const UnauthError = require('../errors/UnauthError');
 
-const { NODE_ENV, JWT_SECRET } = process.env;
+// const { NODE_ENV, JWT_SECRET } = process.env;
 
 const extractBearerToken = (header) => header.replace('Bearer ', '');
 
 const { unauthMessage } = require('../configs/messages');
+const { JWT_SECRET } = require('../configs/index');
 
 // const handleAuthError = (res) => {
 //   res.status(401).send({ message: "Необходимо авторизироваться" });
@@ -30,7 +31,8 @@ module.exports = (req, res, next) => {
       token,
       // временно!!!
       // "super-strong-secret"
-      `${NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret'}`
+      // `${NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret'}`
+      JWT_SECRET
     );
   } catch (err) {
     // return handleAuthError(res);

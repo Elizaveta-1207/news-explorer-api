@@ -11,4 +11,6 @@ module.exports = {
   unauthMessage: 'Необходимо авторизироваться',
   notValidLink: 'Неверный URL',
   notValidEmail: 'Неверный email!',
+  tooManyRequests:
+    'Слишком много запросов с вашего IP-адреса. Попробуйте попытку позже.',
 };

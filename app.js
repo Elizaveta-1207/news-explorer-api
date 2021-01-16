@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 
 const cors = require('cors');
+const helmet = require('helmet');
 require('dotenv').config();
 
 // const { errors, celebrate, Joi } = require('celebrate');
@@ -17,6 +18,7 @@ const { errors } = require('celebrate');
 // const auth = require('./middlewares/auth');
 // const NotFoundError = require('./errors/NotFoundError');
 const { serverErrorMessage, serverFallMessage } = require('./configs/messages');
+const { limiter } = require('./configs/rateLimit');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 // const { PORT = 3000 } = process.env;
@@ -41,6 +43,8 @@ const app = express();
 // });
 
 app.use(cors());
+app.use(helmet());
+app.use(limiter);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
