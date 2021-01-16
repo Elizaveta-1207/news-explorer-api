@@ -8,6 +8,8 @@ const {
   deleteArticle,
 } = require('../controllers/articles');
 
+const { notValidLink } = require('../configs/messages');
+
 const validateArticleId = celebrate({
   params: Joi.object().keys({
     _id: Joi.string().alphanum().length(24).hex(),
@@ -25,7 +27,7 @@ const validateArticle = celebrate({
       .required()
       .custom((url) => {
         if (!validator.isURL(url)) {
-          throw new CelebrateError('Неверный URL');
+          throw new CelebrateError(notValidLink);
         }
         return url;
       }),
@@ -33,7 +35,7 @@ const validateArticle = celebrate({
       .required()
       .custom((url) => {
         if (!validator.isURL(url)) {
-          throw new CelebrateError('Неверный URL');
+          throw new CelebrateError(notValidLink);
         }
         return url;
       }),

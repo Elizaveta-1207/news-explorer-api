@@ -7,6 +7,8 @@ const { NODE_ENV, JWT_SECRET } = process.env;
 
 const extractBearerToken = (header) => header.replace('Bearer ', '');
 
+const { unauthMessage } = require('../configs/messages');
+
 // const handleAuthError = (res) => {
 //   res.status(401).send({ message: "Необходимо авторизироваться" });
 // };
@@ -16,7 +18,8 @@ module.exports = (req, res, next) => {
   // console.log(req.headers);
   if (!authorization || !authorization.startsWith('Bearer ')) {
     // return res.status(401).send({ message: "Необходимо авторизироваться" });
-    return next(new UnauthError('Необходимо авторизироваться'));
+    return next(new UnauthError(unauthMessage));
+    // return next(new UnauthError('Необходимо авторизироваться'));
   }
 
   const token = extractBearerToken(authorization);
@@ -31,7 +34,8 @@ module.exports = (req, res, next) => {
     );
   } catch (err) {
     // return handleAuthError(res);
-    next(new UnauthError('Необходимо авторизироваться'));
+    next(new UnauthError(unauthMessage));
+    // next(new UnauthError('Необходимо авторизироваться'));
   }
 
   req.user = payload;

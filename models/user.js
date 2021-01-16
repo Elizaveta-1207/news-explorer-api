@@ -6,6 +6,7 @@ const bcrypt = require('bcryptjs');
 
 // const uniqueValidator = require('mongoose-unique-validator');
 const UnauthError = require('../errors/UnauthError');
+const { notValidEmail, wrongEmailOrPsw } = require('../configs/messages');
 
 // const regex = /https?:\/\/([\/\w.-]+)/;
 
@@ -18,7 +19,7 @@ const userSchema = new mongoose.Schema({
       validator(email) {
         return validator.isEmail(email);
       },
-      message: 'Неверный email!',
+      message: notValidEmail,
     },
   },
   password: {
@@ -41,12 +42,12 @@ userSchema.statics.findUserByCredentials = function (email, password) {
     .then((user) => {
       if (!user) {
         // return Promise.reject(new Error("Неправильные почта или пароль"));
-        throw new UnauthError('Неправильные почта или пароль');
+        throw new UnauthError(wrongEmailOrPsw);
       }
       return bcrypt.compare(password, user.password).then((matched) => {
         if (!matched) {
           // return Promise.reject(new Error("Неправильные почта или пароль"));
-          throw new UnauthError('Неправильные почта или пароль');
+          throw new UnauthError(wrongEmailOrPsw);
         }
 
         return user;

@@ -9,13 +9,23 @@ const BadRequestError = require('../errors/BadRequestError');
 const UnauthError = require('../errors/UnauthError');
 const UniqueError = require('../errors/UniqueError');
 
-const { NODE_ENV, JWT_SECRET } = process.env;
+const {
+  notFoundMessage,
+  notFoundIdUser,
+  badRequestMessage,
+  notUniqueEmail,
+  wrongEmailOrPsw,
+} = require('../configs/messages');
+
+// const { NODE_ENV, JWT_SECRET } = process.env;
+const { JWT_SECRET } = require('../configs/index');
 
 module.exports.getUsers = (req, res, next) => {
   User.find({})
     .then((users) => {
       if (!users) {
-        throw new NotFoundError('Данные о пользователях не найдены!');
+        throw new NotFoundError(notFoundMessage);
+        // throw new NotFoundError('Данные о пользователях не найдены!');
       } else {
         res.send(users);
       }
@@ -30,7 +40,8 @@ module.exports.getUser = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
       if (!user) {
-        throw new NotFoundError('Нет пользователя с таким id');
+        throw new NotFoundError(notFoundIdUser);
+        // throw new NotFoundError('Нет пользователя с таким id');
       } else {
         res.send(user);
       }
@@ -50,7 +61,8 @@ module.exports.createUser = (req, res, next) => {
     .then((hash) => User.create({ email, password: hash, name }))
     .then((newUser) => {
       if (!newUser) {
-        throw new BadRequestError('Неправильно переданы данные');
+        throw new BadRequestError(badRequestMessage);
+        // throw new BadRequestError('Неправильно переданы данные');
       } else {
         res.send({
           email: newUser.email,
@@ -60,19 +72,21 @@ module.exports.createUser = (req, res, next) => {
     })
     .catch((err) => {
       // eslint-disable-next-line no-console
-      console.log(err);
+      // console.log(err);
       // eslint-disable-next-line no-console
-      console.log(err.name);
+      // console.log(err.name);
       if (err.name === 'ValidationError') {
         next(
-          new BadRequestError('Ошибка валидации. Введены некорректные данные')
+          new BadRequestError(badRequestMessage)
+          // new BadRequestError('Ошибка валидации. Введены некорректные данные')
         );
       } else if (
         // eslint-disable-next-line no-underscore-dangle
         // err._message === 'user validation failed'
         err.code === 11000
       ) {
-        next(new UniqueError('Данный email уже зарегистрирован'));
+        next(new UniqueError(notUniqueEmail));
+        // next(new UniqueError('Данный email уже зарегистрирован'));
       } else {
         next(err);
       }
@@ -85,13 +99,15 @@ module.exports.login = (req, res, next) => {
   return User.findUserByCredentials(email, password)
     .then((user) => {
       if (!user) {
-        throw new UnauthError('Авторизация не пройдена!');
+        throw new UnauthError(wrongEmailOrPsw);
+        // throw new UnauthError('Авторизация не пройдена!');
       }
       const token = jwt.sign(
         { _id: user._id },
         // временно!!!
         // "super-strong-secret",
-        NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
+        // NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
+        JWT_SECRET,
         { expiresIn: '7d' }
       );
       res.send({ token });
