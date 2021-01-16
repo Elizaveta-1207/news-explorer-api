@@ -2,7 +2,7 @@
 /* eslint-disable object-curly-newline */
 const Article = require('../models/article');
 const NotFoundError = require('../errors/NotFoundError');
-const BadRequestError = require('../errors/BadRequestError');
+// const BadRequestError = require('../errors/BadRequestError');
 const ForbiddenError = require('../errors/ForbiddenError');
 
 module.exports.getArticles = (req, res, next) => {
@@ -30,21 +30,27 @@ module.exports.createArticle = (req, res, next) => {
     owner: req.user._id,
   })
     .then((article) => {
-      if (!article) {
-        throw new NotFoundError('Неправильно переданы данные');
-      } else {
-        res.send(article);
-      }
+      res.send({
+        _id: article._id,
+        keyword: article.keyword,
+        title: article.title,
+        text: article.text,
+        date: article.date,
+        source: article.source,
+        link: article.link,
+        image: article.image,
+      });
     })
-    .catch((err) => {
-      // console.log(err);
-      if (err.name === 'ValidationError') {
-        next(
-          new BadRequestError('Ошибка валидации. Введены некорректные данные')
-        );
-      }
-      next(err);
-    });
+    .catch(next);
+  // .catch((err) => {
+  //   console.log(err);
+  //   if (err.name === 'ValidationError') {
+  //     next(
+  //       new BadRequestError('Ошибка валидации. Введены некорректные данные')
+  //     );
+  //   }
+  //   next(err);
+  // });
 };
 
 module.exports.deleteArticle = (req, res, next) => {

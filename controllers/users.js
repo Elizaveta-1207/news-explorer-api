@@ -60,17 +60,17 @@ module.exports.createUser = (req, res, next) => {
     })
     .catch((err) => {
       // eslint-disable-next-line no-console
-      // console.log(err);
+      console.log(err);
       // eslint-disable-next-line no-console
-      // eslint-disable-next-line no-underscore-dangle
-      // console.log(err._message);
-      /* if (err.name === 'ValidationError') {
+      console.log(err.name);
+      if (err.name === 'ValidationError') {
         next(
           new BadRequestError('Ошибка валидации. Введены некорректные данные')
         );
-      } else */ if (
+      } else if (
         // eslint-disable-next-line no-underscore-dangle
-        err._message === 'user validation failed'
+        // err._message === 'user validation failed'
+        err.code === 11000
       ) {
         next(new UniqueError('Данный email уже зарегистрирован'));
       } else {
